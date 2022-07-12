@@ -41,16 +41,16 @@ const OPTIONS = [
   'Sex',
   'Family',
   'Community',
-  'Work',
+  'Occupation',
   'Being Social',
   'Solitude',
   'Intellectual Activity',
   'Physical Activity',
   'Creative Activity',
-  'Freedom from Stress',
-  'Quality of Time',
+  'Peace',
+  'Productivity',
   'Security',
-  'Connection with Nature',
+  'Nature',
   'Climate',
   'Higher Purpose',
   'Prestige/Recognition',
@@ -62,12 +62,12 @@ const OPTIONS = [
   'Appearance',
   'Pleasure',
   'Romance',
-  'Ownership',
+  'Owning Things',
   'Money',
   'Religion',
   'Roots/Tradition',
   'Relaxation',
-  'Comfort/Ease'
+  'Physical Comfort'
 ]
 
 const generateDecision = () => {
