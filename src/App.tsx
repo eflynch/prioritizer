@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSessionStorage } from 'react-use';
+import React, { useEffect, useState } from 'react';
+import { useLocalStorage } from 'react-use';
 import update from 'immutability-helper';
 import './App.css';
 import Graph from './Graph';
@@ -11,16 +11,32 @@ function randomInt(max:number) {
 
 
 function DecisionMaker(props:any) {
+
+  useEffect(()=>{
+    const handler = event => {
+      if (event.key === "a") {
+        props.castBallot({decision:props.decision, choice:"a"});  
+      }
+      if (event.key === "b") {
+        props.castBallot({decision:props.decision, choice:"b"});
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => {
+      window.removeEventListener("keydown", handler);
+    }
+  });
+
   return (
     <div className="Decision">
-      <span>Do You Prefer...</span>
+      <span>Which is more important...</span>
       <button onClick={()=>{
         props.castBallot({decision:props.decision, choice:"a"});
-      }}>{props.decision.a}</button>
+      }}>A: {props.decision.a}</button>
       <span>OR</span>
       <button onClick={()=>{
         props.castBallot({decision:props.decision, choice:"b"});
-      }}>{props.decision.b}</button>
+      }}>B: {props.decision.b}</button>
     </div>
   );
 }
@@ -86,7 +102,7 @@ const generateDecision = () => {
 };
 
 function App() {
-  const [ballotsCast, setBallotsCast] = useSessionStorage<Ballot[]>("ballots", []);
+  const [ballotsCast, setBallotsCast] = useLocalStorage<Ballot[]>("ballots", []);
   const [decision, setDecision] = useState<Decision|null>(generateDecision());
   const [showResults, setShowResults] = useState<boolean>(true);
 

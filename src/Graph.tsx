@@ -53,12 +53,15 @@ function Graph(props:{ballots:Ballot[]}) {
         setGraphID(uuid());
     }, [props.ballots]);
 
+    const [shakeTowards, setShakeTowards] = useState<"roots"|"leaves">("roots");
+
     const options = {
         layout: {
           hierarchical: {
             enabled: true,
             sortMethod: "directed",
-            shakeTowards:"leaves"
+            shakeTowards:shakeTowards,
+            direction: 'UD'
           } 
         },
         edges: {
@@ -75,7 +78,13 @@ function Graph(props:{ballots:Ballot[]}) {
       };
     
     return (
-        <GraphInternal key={graphID} graph={graphData} options={options} />
+        <>
+            <GraphInternal key={graphID} graph={graphData} options={options} />
+            <button onClick={()=>{
+                setShakeTowards(shakeTowards=>shakeTowards === "roots" ? "leaves" : "roots");
+            }} >Toggle Gravity</button>
+        </>
+        
     )
 }
 
