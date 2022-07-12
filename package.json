@@ -1,5 +1,6 @@
 {
   "name": "prioritizer",
+  "homepage" : "https://evanlyn.ch/prioritizer",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
