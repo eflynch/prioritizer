@@ -39,21 +39,22 @@ function ShowResults(props:any) {
 const OPTIONS = [
   'Health',
   'Sex',
-  'Family Life',
+  'Family',
+  'Community',
   'Work',
-  'Sociability',
+  'Being Social',
   'Solitude',
   'Intellectual Activity',
   'Physical Activity',
   'Creative Activity',
-  'Feeling Good and Freedom from Stress',
+  'Freedom from Stress',
   'Quality of Time',
   'Security',
   'Connection with Nature',
   'Climate',
-  'Commitment to a Higher Purpose',
-  'Prestige, Power, and Recognition',
-  'Excitement, Stimulation, and Variety',
+  'Higher Purpose',
+  'Prestige/Recognition',
+  'Excitement/Variety',
   'Education',
   'Ingenuity',
   'Children',
@@ -64,9 +65,9 @@ const OPTIONS = [
   'Ownership',
   'Money',
   'Religion',
-  'Roots, Tradition, Ethnicity',
+  'Roots/Tradition',
   'Relaxation',
-  'Physical Comfort and Convenience'
+  'Comfort/Ease'
 ]
 
 const generateDecision = () => {

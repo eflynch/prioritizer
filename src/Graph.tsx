@@ -8,11 +8,6 @@ const uuid = () => {
     return crypto.randomUUID();
 }
 
-type Node = {
-    label:string,
-    id:number
-}
-
 type Link = {
     from:number,
     to:number,
@@ -62,11 +57,19 @@ function Graph(props:{ballots:Ballot[]}) {
         layout: {
           hierarchical: {
             enabled: true,
-            sortMethod: "directed"
+            sortMethod: "directed",
+            shakeTowards:"leaves"
           } 
         },
         edges: {
           color: "#000000"
+        },
+        nodes: {
+            color: {
+                background: "white",
+                border: "black"
+            }, 
+            borderWidth: 1,
         },
         height: "500px"
       };
