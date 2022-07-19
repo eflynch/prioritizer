@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocalStorage } from 'react-use';
 import update from 'immutability-helper';
 import './App.css';
@@ -7,6 +7,30 @@ import { Ballot, Decision } from './Types';
 
 function randomInt(max:number) {
   return Math.floor(Math.random() * max);
+}
+
+
+function Options(props:any) {
+  return (
+    <div>
+      {props.options.map((option:string, i:number)=>{
+        return (
+          <div key={i}>
+            <b onClick={()=>{
+              const newOptions = update(props.options, {$splice: [[i, 1]]});
+              props.newOptions(newOptions);
+              }}>x </b>
+            <input type="text" defaultValue={option} onChange={(e:any)=>{
+            props.newOptions(update(props.options, {[i]: {$set: e.currentTarget.value}}));
+          }} />
+          </div>
+        );
+    })}
+      <button onClick={()=>{
+        props.newOptions(update(props.options, {$push: [""]}));
+      }}>+</button>
+    </div>
+  )
 }
 
 
@@ -47,7 +71,6 @@ function ShowResults(props:any) {
       <div>
         <Graph ballots={props.ballotsCast} />
       </div>
-      <button onClick={props.clearGraph}>clear</button>
     </div>
   )
 }
@@ -86,42 +109,50 @@ const OPTIONS = [
   'Physical Comfort'
 ]
 
-const generateDecision = () => {
-  const aIndex = randomInt(OPTIONS.length)
+const generateDecision = (options:string[]) => {
+  const aIndex = randomInt(options.length)
   let bIndex = undefined;
   while(bIndex == undefined) {
-    const possibleBIndex = randomInt(OPTIONS.length)
+    const possibleBIndex = randomInt(options.length)
     if (possibleBIndex !== aIndex) {
       bIndex = possibleBIndex; 
     }
   }
   return {
-    a:OPTIONS[aIndex < bIndex ? aIndex : bIndex],
-    b:OPTIONS[aIndex < bIndex ? bIndex : aIndex]
+    a:options[aIndex < bIndex ? aIndex : bIndex],
+    b:options[aIndex < bIndex ? bIndex : aIndex]
   }
 };
 
 function App() {
+  const [options, setOptions] = useLocalStorage<string[]>("options1", OPTIONS);
   const [ballotsCast, setBallotsCast] = useLocalStorage<Ballot[]>("ballots", []);
-  const [decision, setDecision] = useState<Decision|null>(generateDecision());
-  const [showResults, setShowResults] = useState<boolean>(true);
+  const [decision, setDecision] = useState<Decision|null>(generateDecision(options));
+  const [showResults, setShowResults] = useLocalStorage<boolean>("showResults", true);
 
   const clearBallots = () =>{
     setBallotsCast([]);
   };
 
-  const newDecision = () => {
-    setDecision(generateDecision());
+  const newDecision = (options:string[]) => {
+    setDecision(generateDecision(options));
   }
 
   const castBallot = (ballot:Ballot) => {
     setBallotsCast((()=>{
       return update(ballotsCast, {$push: [ballot]});
     })());
-    newDecision();
+    newDecision(options);
+  }; 
+
+  const newOptions = (options:string[]) => {
+    if (options.length < 2) {
+      return;
+    }
+    setOptions(options);
+    clearBallots();
+    newDecision(options);
   };
-
-
 
   return (
     <div className="App">
@@ -129,7 +160,11 @@ function App() {
         Prioritizer
       </header>
       {decision ? <DecisionMaker decision={decision} castBallot={castBallot}/> : <></>}
-      {showResults ? <ShowResults ballotsCast={ballotsCast} clearGraph={clearBallots}/> : <></>}
+      <button onClick={clearBallots}>clear</button>
+      <button onClick={()=>{setShowResults(!showResults)}}>{showResults ? "show options" : "show results"}</button>
+      {showResults ?
+        <ShowResults ballotsCast={ballotsCast}/> :
+        <Options options={options} newOptions={newOptions} />}
     </div>
   );
 }
